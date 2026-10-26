@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PUZZLE</title>
+<style>
+@font-face {
+  font-family: "Ark Pixel Latin";
+  src: url("./ark-pixel-10px-monospaced-latin.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Ark Pixel Chinese";
+  src: url("./fusion-pixel-10px-monospaced-zh_hant.ttf") format("truetype");
+}
+:root{--bg:#1C2D50;--text:#FFFFFF;--muted:#B8C8E5;--blue:#A8EDF4;--line:#405985;--bad:#E1BCE6}
+*{box-sizing:border-box}
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    linear-gradient(rgba(28, 45, 80, 0.55), rgba(23, 39, 71, 0.65)),
+    url("./background.jpg") center / cover no-repeat fixed;
+  color: var(--text);
+  font-family: "Ark Pixel Chinese", "Ark Pixel Latin", monospace;
+  display: flex;
+  justify-content: center;
+  padding: 42px 18px 56px;
+  line-height: 1.65;
+}
+.app{width:min(100%,850px);position:relative;z-index:1}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;padding:0 2px 22px;border-bottom:1px solid #A8EDF433}
+.eyebrow{font:11px "Ark Pixel Chinese","Ark Pixel Latin",monospace;letter-spacing:3px;color:var(--muted);margin-bottom:9px}
+.brand{font:500 clamp(28px,5vw,42px) "Ark Pixel Chinese","Ark Pixel Latin",monospace;letter-spacing:2px;margin:0}
+.sub{font-size:12px;color:var(--muted);letter-spacing:1px;margin-top:8px}
+.progress-info{text-align:right;white-space:nowrap}
+.progress-number{font:22px "Ark Pixel Chinese","Ark Pixel Latin",monospace;color:#c4c9fb}
+.progress-caption{font-size:11px;color:var(--muted);margin-top:5px}
+.progress-track{height:3px;background:#FFFFFF16;margin-top:18px;overflow:hidden;border-radius:5px}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#8582D9,#55B3D9,#A8EDF4);transition:width .5s ease}
+.intro{display:flex;justify-content:space-between;gap:16px;align-items:center;margin:22px 0 15px}
+.intro p{margin:0;color:#a0abc9;font-size:13px}
+.legend{font-size:11px;color:var(--muted);white-space:nowrap}
+.board-wrap{background:#13234440;border:1px solid #A8EDF433;border-radius:16px;padding:clamp(12px,3vw,24px);box-shadow:0 20px 65px #07132945}
+.grid{display:grid;grid-template-columns:repeat(26,minmax(0,1fr));gap:clamp(1px,.45vw,4px);user-select:none}
+.cell{position:relative;min-width:0;aspect-ratio:1;display:flex;justify-content:center;align-items:center;border-radius:4px;color:#F2F7FF;font-size:clamp(9px,1.55vw,15px);cursor:pointer;transition:background .18s,color .25s,transform .2s;outline:none}
+.cell:hover{background:#5A7CBF40}
+.cell:focus-visible{box-shadow:0 0 0 2px var(--blue)}
+.cell.selected{background:#8582D933;color:#FFFFFF;box-shadow:inset 0 0 0 1px #A8EDF4a8}
+.cell.pulse{animation:pulse .48s ease}
+.cell.wrong{animation:shake .28s ease}
+.cell.empty{pointer-events:none}
+.cell .remaining-count{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font:7px "Ark Pixel Chinese","Ark Pixel Latin",monospace;line-height:1;color:inherit;opacity:.9;pointer-events:none}
+.cell.done-char{color:#7E91B5}
+.cell.done-char .remaining-count{opacity:.25}
+@keyframes pulse{0%{transform:scale(1)}38%{transform:scale(1.22);background:#a9d9df35}72%{transform:scale(.96)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.selection{margin-top:20px;background:#13234440;border:1px solid #A8EDF433;border-radius:13px;padding:16px}
+.selection-top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}
+.small-label{font:10px "Ark Pixel Chinese","Ark Pixel Latin",monospace;letter-spacing:2px;color:var(--muted)}
+#selectedWord{font-size:20px;letter-spacing:3px;min-height:30px;overflow-wrap:anywhere}
+.selection-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid #5A7CBF;background:#2B426B;color:#FFFFFF;border-radius:8px;padding:9px 15px;font:13px "Ark Pixel Chinese","Ark Pixel Latin",monospace;cursor:pointer;transition:background .2s,transform .2s}
+.btn:hover{background:#385684}
+.btn.primary{background:#A8EDF4;color:#1C2D50;border-color:#A8EDF4}
+.btn.primary:hover{background:#C3F4F8}
+.btn.quiet{background:transparent;color:#C5D2EB}
+.input-row{display:flex;gap:8px;margin-top:11px}
+.input-row input{flex:1;min-width:0;background:#14244340;border:1px solid #405985;border-radius:8px;padding:11px 13px;color:#FFFFFF;font:14px "Ark Pixel Chinese","Ark Pixel Latin",monospace;outline:none}
+.input-row input:focus{border-color:#A8EDF4}
+.input-row input::placeholder{color:#65718f}
+#tip{min-height:22px;margin:12px 2px 0;font-size:12px;color:var(--muted)}
+#tip.success{color:#C3EDD6}
+#tip.error{color:#E1BCE6}
+.found-section{margin-top:30px}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.section-title{font-size:13px;font-weight:500;letter-spacing:1px}
+.section-count{font:11px "Ark Pixel Chinese","Ark Pixel Latin",monospace;color:var(--muted)}
+.found-words{display:flex;flex-wrap:wrap;gap:8px;min-height:32px}
+.found-word{border:1px solid #405985;background:#263B6340;color:#E7EEFF;border-radius:7px;padding:7px 10px;font-size:12px;animation:word-in .35s ease both}
+.found-word.new{border-color:#C3EDD6;color:#C3EDD6}
+@keyframes word-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.footer{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:28px;color:#626f8d;font-size:11px}
+.footer button{font-size:11px;padding:7px 10px}
+.toast{position:fixed;left:50%;top:22px;transform:translate(-50%,-12px);opacity:0;pointer-events:none;background:#20375C;border:1px solid #5A7CBF;border-radius:10px;padding:12px 20px;text-align:center;box-shadow:0 12px 40px #0005;transition:opacity .3s,transform .3s;z-index:5;max-width:90vw}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast strong{display:block;font-size:16px;font-weight:500;letter-spacing:2px}
+.toast span{display:block;font-size:11px;color:#A8EDF4;margin-top:5px}
+.palette-sparkles{position:fixed;right:clamp(12px,5vw,64px);bottom:clamp(16px,5vh,52px);z-index:0;display:grid;grid-template-columns:repeat(3,6px);gap:7px;opacity:.72;pointer-events:none}
+.palette-sparkles i{display:block;width:6px;height:6px;border-radius:1px;animation:softTwinkle 4.8s ease-in-out infinite}
+.palette-sparkles i:nth-child(1){background:#8582D9}
+.palette-sparkles i:nth-child(2){background:#5A7CBF;animation-delay:.4s}
+.palette-sparkles i:nth-child(3){background:#55B3D9;animation-delay:.8s}
+.palette-sparkles i:nth-child(4){background:#A8EDF4;animation-delay:1.2s}
+.palette-sparkles i:nth-child(5){background:#E1BCE6;animation-delay:1.6s}
+.palette-sparkles i:nth-child(6){background:#C3EDD6;animation-delay:2s}
+.palette-sparkles i:nth-child(7){background:#E6F1B0;animation-delay:2.4s}
+.palette-sparkles i:nth-child(8){background:#FFFFFF;animation-delay:2.8s}
+.palette-sparkles i:nth-child(9){background:#8582D9;animation-delay:3.2s}
+@keyframes softTwinkle{0%,100%{opacity:.35;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+
+.game-app{display:none}
+.start-screen{width:min(100%,850px);min-height:calc(100vh - 98px);display:flex;align-items:center;justify-content:center;margin:auto}
+.start-card{width:100%;text-align:center;padding:clamp(28px,7vw,70px) 20px;background:#13234440;border:1px solid #A8EDF444;border-radius:22px;box-shadow:0 20px 65px #07132945;position:relative;overflow:hidden}
+.start-mark{font:11px "Ark Pixel Chinese","Ark Pixel Latin",monospace;letter-spacing:4px;color:var(--muted);margin-bottom:20px}
+.start-title{font:500 clamp(36px,8vw,64px) "Ark Pixel Chinese","Ark Pixel Latin",monospace;letter-spacing:4px;margin:0;color:#FFFFFF}
+.start-cn{font-size:15px;letter-spacing:5px;color:var(--blue);margin-top:13px}
+.start-desc{max-width:440px;margin:22px auto 30px;color:var(--muted);font-size:13px}
+.start-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.start-actions .btn{min-width:145px;padding:12px 18px}
+.start-version{margin-top:34px;font:10px "Ark Pixel Chinese","Ark Pixel Latin",monospace;letter-spacing:2px;color:#7184A8}
+.rules-layer{display:none;position:fixed;inset:0;z-index:10;background:#071329c9;align-items:center;justify-content:center;padding:20px}
+.rules-layer.show{display:flex}
+.rules-card{width:min(100%,520px);max-height:85vh;overflow:auto;background:#1C2D50;border:1px solid #A8EDF455;border-radius:16px;padding:24px;box-shadow:0 20px 65px #0008}
+.rules-card h2{margin:0 0 14px;font-size:22px;letter-spacing:1px}
+.rules-card ol{padding-left:22px;color:#D5E0F5;font-size:13px}
+.rules-card li{margin:9px 0}
+.rules-close{display:flex;justify-content:flex-end;margin-top:18px}
+.selection-slot{display:inline-flex;min-width:28px;height:32px;align-items:center;justify-content:center;margin:0 2px 3px;padding:0 4px;border-bottom:1px solid #8FD8FF;color:#FFFFFF;font-size:19px;letter-spacing:0}
+.selection-slot.filled{background:#8FD8FF24;border-radius:5px 5px 0 0}
+.cell.found-highlight{background:#8FD8FF48!important;box-shadow:inset 0 0 0 1px #8FD8FF99;border-radius:4px}
+@media(max-width:560px){body{padding:24px 10px 36px}.brand{font-size:28px}.sub{font-size:10px}.progress-number{font-size:18px}.intro{align-items:flex-start;flex-direction:column;gap:7px}.grid{gap:1px}.cell{font-size:clamp(8px,2.2vw,12px);border-radius:3px}.board-wrap{padding:9px}.selection-top{align-items:flex-start;flex-direction:column}.selection-actions .btn{flex:1}.footer{align-items:flex-start;flex-direction:column}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body><div class="palette-sparkles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<section class="start-screen" id="startScreen"><div class="start-card"><div class="start-mark">A QUIET LITTLE PUZZLE</div><h1 class="start-title">PUZZLE</h1><div class="start-cn">by AC&Fiona</div><p class="start-desc">在字里行间，发现故事。<br>寻找藏在方阵中的电影名与书名。</p><div class="start-actions"><button class="btn primary" id="startBtn">▶ 开始游戏</button><button class="btn quiet" id="showRulesBtn">游戏规则</button></div><div class="start-version">PIXEL EDITION · FIND THE TITLE</div></div></section>
+<main class="app game-app" id="gameApp">
+<header><div><div class="eyebrow">A QUIET LITTLE PUZZLE</div><h1 class="brand">PUZZLE</h1><div class="sub">在字里行间，发现故事。</div></div><div class="progress-info"><div class="progress-number"><span id="foundCount">0</span><span style="color:#697695"> / </span><span id="totalCount">0</span></div><div class="progress-caption">已发现的故事</div></div></header>
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+<div class="intro"><p>点击汉字，组合出隐藏的电影名或书名。</p><div class="legend">数字 = 这个字还参与多少个答案</div></div>
+<section class="board-wrap"><div class="grid" id="grid" aria-label="汉字谜题方阵"></div></section>
+<section class="selection"><div class="selection-top"><div><div class="small-label">CURRENT SELECTION</div><div id="selectedWord">选择一些汉字</div></div><div class="selection-actions"><button class="btn primary" id="submitBtn">确认答案</button><button class="btn quiet" id="undoBtn">撤销</button><button class="btn quiet" id="clearBtn">清空</button></div></div><div class="input-row"><input id="wordInput" type="text" placeholder="也可以直接输入书名或电影名…" autocomplete="off"><button class="btn" id="inputSubmitBtn">提交</button></div></section>
+<p id="tip" aria-live="polite">慢慢来，每发现一个词，方阵都会悄悄改变。</p>
+<section class="found-section"><div class="section-head"><div class="section-title">已发现的故事</div><div class="section-count" id="foundCaption">尚未发现</div></div><div class="found-words" id="wordsBox"></div></section>
+<div class="footer"><span id="saveTip">进度自动保存到当前浏览器</span><button class="btn quiet" id="resetBtn">重置游戏</button></div>
+</main><div class="toast" id="toast"><strong id="toastWord"></strong><span>发现了一个故事</span></div>
+<div class="rules-layer" id="rulesLayer" role="dialog" aria-modal="true" aria-labelledby="rulesTitle"><div class="rules-card"><h2 id="rulesTitle">游戏规则</h2><ol><li>在汉字方阵中寻找隐藏的电影名或书名，答案可能横向、纵向或斜向排列。</li><li>点击方阵里的汉字进行选择。系统会尽量根据隐藏词的位置，把已选汉字放到下方对应的位置；点击已选中的字可以取消选择。</li><li>选完后点击“确认答案”。也可以直接在输入框输入电影名或书名后提交。</li><li>答对后，整条答案路径会显示淡蓝色半透明标记，并加入“已发现的故事”列表。</li><li>“撤销”取消最后一次选择，“清空”取消当前所有选择；“重置游戏”会清除已发现进度。</li><li>游戏进度会自动保存在当前浏览器中。</li></ol><div class="rules-close"><button class="btn primary" id="closeRulesBtn">知道了</button></div></div></div>
+<script>
+const GRID_LINES = [
+"勋出恐鼠野草莓沌投光变形记捕闪美寻千与千头号玩家花了",
+"功夫熊猫绿皮书少华相之冰倾灵丽在梦人青红霸谷故园风雨",
+"妮吉菲伊见人情年芳声智城雪心老内环超鸟人王海滩起造雷",
+"芝加哥罚偏感样时泳者之心灵奇旅友游脱能之别底林谍中谍",
+"万丝丽爱与花束般的恋爱乐之城缘红记台戏陆姬小森林影魅",
+"箭物简智慢罪奥维尔号像恩音翠石日假马罗暗战纵庆重左耳",
+"穿怪理店傲赎救的克申肖指伯翡主公灵幽日夏天队重健倾食",
+"心房客论饭鱼汉尼拔羊的环德公八犬忠里欧洛工纱生听男神",
+"坐而地席象大坦小小狮子王小妇人佳世乱写特假面友女才天",
+"爱久弥新红泰斯猪丹麦女孩姐孩小笨迹奇脑的波盗子孩巫杀",
+"天一间灯猪里肯佩悉的烧冬男天空之城头低网蒂利海芭死呼",
+"道房笼追莫戈兰奇达怪燃迹春光乍泄围俗怪族海珀哈比字亡",
+"壁高梵忆迪尔弗拉多布奇的城光月球小鬼当家神边尔名勒大",
+"高花繁似里博普诺兰虻班物格光升说她对有偷误错的边河加",
+"地狂少水阿穿婴阿奥牛动格语棋王之剧喜奶小丑你移曼流州",
+"战路潘年尼靴坡凡放狂心动某坏国黑事爸家为以何动别彻人",
+"宇末德华派子镜达疯甜然之破种杂暗唤爸想请妞小城大纳斯",
+"戒代彼德兔的龙缘护蜜怦敌石菊物物呼吧梦毒青律堡杀误尼",
+"紫皇岸爱帕猫奇守奇蜜无问西东好质的跤日蛇舌政着逃事威",
+"拼帝花手汝洋太幻遇发咒叶枯线爪兽性摔白告查俏活大桥断",
+"贴海黄刀海死蒙浮漂戒魔女单无无餐野边路理我佳生之欲魂",
+"幸的小剪洋上杀一一流睡花清名间战争与和平是人的安血钻",
+"福水鞋青之炎钢天代罪沉茶愿之的道事巧女生丽家尔传与岁",
+"溺香子千歌后天琴宗父教默遗辈兰勒克鱼人美小行黛地亮月",
+"火偷物礼的房号七师毒命绝的赫字力德静龙传正飞阿甘正传",
+"花漾少女杀人事件虫液将谢穆羔工小寂辛小丑回魂象的背影"
+];
+const ALLOWED_WORDS = ["功夫熊猫","功勋","野草莓","芝加哥","绿皮书","心智相投","芳华","罪与罚","肖申克的救赎","指环王","忠犬八公","伯德小姐","汉尼拔","狮子王","小羊肖恩","翡翠城","罗马假日","暗战","幽灵公主","小妇人","小公主","爱乐之城","花束般的恋爱","奥维尔号","鸟人","海王","海滩","小森林","谍影重重","谍中谍","戏台","冰雪奇缘","燃烧女子的肖像","傲慢与偏见","简爱","花与爱丽丝","万箭穿心","万物理论","弗兰肯斯坦","布达佩斯大饭店","理智与感情","泳者之心","音乐之声","倾城之恋","闪灵","心灵奇旅","变形记","千与千寻","头号玩家","起风了","故园风雨","花园","美丽心灵","雷雨","一一","小王子","奇迹笨小孩","燃冬","丹麦女孩","小猪佩奇","悉达多","怪奇物语","春光乍泄","围城","低俗小说","小鬼当家","情人","花样年华","老友记","红石","红日","超人","超能陆战队","寻梦环游记","乱世佳人","小姐","里欧洛","夏洛特的网","特写","假面","霸王别姬","青鸟","青红","海底小纵队","重庆森林","左耳","魅影","天空之城","奇迹男孩","放牛班的春天","月升王国","月球","穿普拉达的女王","大鱼","心房客","怪物","爱久弥新","大象席地而坐","红猪","头脑特工队","健听女孩","海蒂","加勒比海盗","夏日幽灵","夏天","面纱","重生","食神","哈利波特","珀尔","河边的错误","小偷家族","鬼怪","她","对她说","家有喜事","光光光","疯狂动物城","甜心格格","棋王","杀死比尔","芭比","面子","女巫","血钻","魂断威尼斯","何以为家","摔跤吧爸爸","喜剧之王","黑暗物质","某种物质","好东西","无问西东","怦然心动","你的名字","坏种","菊石","杂种","无敌破坏王","阿凡达","末代皇帝","末路狂花","梵高","房间","诺兰","牛虻","奥兰多","泰坦尼克号","兰戈","莫里斯","壁花少年","少年派的奇幻漂流","沉睡魔咒","茶花女","魔戒","七宗罪","叶问","无间道","大城小妞","误杀","大逃杀","小丑","小字辈","无名之辈","野性的呼唤","穆赫兰道","兔子坡","彼德兔","龙猫","蒙太奇","魔发奇缘","镜子","穿靴子的猫","溺水小刀","一天","天道","阿婴","甜蜜蜜","守护甜心","内在美","心之石","心动","莫迪里阿尼","追忆似水年华","彼德潘","博尔戈","拼贴幸福","火花","花漾少女杀人事件","毒液","海上钢琴师","青之炎","海洋之歌","后天","七号房的礼物","香水","小鞋子","剪刀手爱德华","彼岸花","一代宗师","绝命毒师","教父","师父","天天","杀死汝爱","漂浮","奇遇","枯叶","高地战","战争与和平","路边野餐","遗愿清单","西线无战事","美丽人生","律政俏佳人","哈尔的移动城堡","流人","神偷奶爸","大河","断桥","人生大事","毒蛇","青蛇","蛇舌","白日梦想家","兽性","兽爪","虫师","小飞象","飞行家","活着","黄海","偷香","千子","寂静人生","超脱","小美人鱼","美人鱼","辛德勒的名单","我是丽","告白","女人","小龙人","小丑回魂","阿甘正传","阿飞正传","阿黛尔的生活","生之欲","甘地传","象的背影","繁花","情书"];
+const COUNT_COLORS={1:'#A8EDF4',2:'#C3EDD6',3:'#E6F1B0',4:'#E1BCE6',5:'#8582D9',6:'#55B3D9'};
+const SAVE_KEY='puzzle_custom_v1';
+const gridData=GRID_LINES.map(x=>[...x]);
+const ROWS=gridData.length,COLS=Math.max(...gridData.map(x=>x.length));
+let foundWords=[],foundSet=new Set(),selectedCells=[],foundPaths=[],remainingCounts=[],wordPaths=new Map();
+const gridEl=document.getElementById('grid'),selectedWordEl=document.getElementById('selectedWord'),tip=document.getElementById('tip'),wordInput=document.getElementById('wordInput');
+document.getElementById('totalCount').textContent=ALLOWED_WORDS.length;
+gridEl.style.gridTemplateColumns=`repeat(${COLS},minmax(0,1fr))`;
+const cellEls=Array.from({length:ROWS},()=>Array(COLS));
+function findWord(word){const chars=[...word],dirs=[[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]];for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){if(gridData[r][c]!==chars[0])continue;for(const [dr,dc] of dirs){const coords=[];let ok=true;for(let k=0;k<chars.length;k++){let nr=r+dr*k,nc=c+dc*k;if(nr<0||nr>=ROWS||nc<0||nc>=COLS||gridData[nr][nc]!==chars[k]){ok=false;break}coords.push([nr,nc])}if(ok)return coords}}return null}
+function calculateCounts(){remainingCounts=Array.from({length:ROWS},()=>Array(COLS).fill(0));wordPaths.clear();for(const word of ALLOWED_WORDS){const path=findWord(word);if(path){wordPaths.set(word,path);if(!foundSet.has(word))path.forEach(([r,c])=>remainingCounts[r][c]++)}}}
+function makeGrid(){for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const ch=gridData[r][c]||'',cell=document.createElement('div');cell.className='cell'+(!ch?' empty':'');cell.textContent=ch;if(ch){cell.tabIndex=0;cell.setAttribute('role','button');cell.setAttribute('aria-label',`${ch}，剩余 ${remainingCounts[r]?.[c]||0} 个答案`);cell.addEventListener('click',()=>selectCell(r,c));cell.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectCell(r,c)}})}gridEl.appendChild(cell);cellEls[r][c]=cell}}
+function updateDots(){for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const cell=cellEls[r][c];if(!cell||!gridData[r][c])continue;cell.querySelector('.remaining-count')?.remove();const n=remainingCounts[r][c];cell.classList.toggle('done-char',n===0);cell.style.color=n>0?(COUNT_COLORS[n]||''):'';if(n>0){const count=document.createElement('span');count.className='remaining-count';count.textContent=String(n);count.setAttribute('aria-hidden','true');cell.appendChild(count)}cell.setAttribute('aria-label',`${gridData[r][c]}，剩余 ${n} 次`)}}
+function getSelectionCandidate(){
+ if(!selectedCells.length)return null;
+ const chosen=new Set(selectedCells.map(([r,c])=>`${r},${c}`));
+ const candidates=[];
+ for(const [word,path] of wordPaths){
+  if(foundSet.has(word)||path.length<selectedCells.length)continue;
+  if(selectedCells.every(([r,c])=>path.some(([pr,pc])=>pr===r&&pc===c)))candidates.push({word,path});
+ }
+ candidates.sort((a,b)=>a.path.length-b.path.length);
+ return candidates[0]||null;
+}
+function renderSelection(){
+ selectedWordEl.innerHTML='';
+ if(!selectedCells.length){selectedWordEl.textContent='选择一些汉字';}
+ else{
+  const candidate=getSelectionCandidate();
+  if(candidate){
+   const chosen=new Set(selectedCells.map(([r,c])=>`${r},${c}`));
+   candidate.path.forEach(([r,c])=>{const slot=document.createElement('span');const filled=chosen.has(`${r},${c}`);slot.className='selection-slot'+(filled?' filled':'');slot.textContent=filled?gridData[r][c]:'·';selectedWordEl.appendChild(slot)});
+  }else selectedWordEl.textContent=selectedCells.map(([r,c])=>gridData[r][c]).join('');
+ }
+ for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)cellEls[r][c].classList.toggle('selected',selectedCells.some(([rr,cc])=>rr===r&&cc===c));
+}
+function selectCell(r,c){if(!gridData[r][c])return;const i=selectedCells.findIndex(([rr,cc])=>rr===r&&cc===c);if(i>=0)selectedCells.splice(i,1);else selectedCells.push([r,c]);renderSelection();setTip('', '');cellEls[r][c].classList.remove('pulse');void cellEls[r][c].offsetWidth;cellEls[r][c].classList.add('pulse')}
+function straightPath(word,coords){if(!ALLOWED_WORDS.includes(word)||[...word].length!==coords.length)return false;if(coords.some(([r,c],i)=>!gridData[r]||gridData[r][c]!==[...word][i]))return false;if(coords.length<2)return true;const dr=coords[1][0]-coords[0][0],dc=coords[1][1]-coords[0][1];if(Math.abs(dr)>1||Math.abs(dc)>1||(!dr&&!dc))return false;return coords.every(([r,c],i)=>r===coords[0][0]+dr*i&&c===coords[0][1]+dc*i)}
+function setTip(msg,type=''){tip.textContent=msg;tip.className=type}
+let toastTimer;function showToast(word){const toast=document.getElementById('toast');document.getElementById('toastWord').textContent=word;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),1500)}
+function animatePath(coords){coords.forEach(([r,c],i)=>setTimeout(()=>{const el=cellEls[r][c];el.classList.remove('pulse');void el.offsetWidth;el.classList.add('pulse')},i*45))}
+function commitWord(word,coords){if(foundSet.has(word)){setTip('这个故事已经发现过了。');return}foundWords.push(word);foundSet.add(word);foundPaths.push(coords);selectedCells=[];wordInput.value='';calculateCounts();updateDots();renderSelection();renderFoundWords(word);updateProgress();animatePath(coords);showToast(word);setTip('找到了！又发现了一个故事。','success');save();if(foundWords.length===ALLOWED_WORDS.length){setTip('所有故事都已发现。愿你带着一点点满足离开。','success');document.querySelectorAll('.cell:not(.empty)').forEach((el,i)=>setTimeout(()=>{el.classList.remove('pulse');void el.offsetWidth;el.classList.add('pulse')},i*5))}}
+function checkSelected(){
+ if(!selectedCells.length){setTip('先选择几个汉字，再确认答案。');return}
+ const chosen=new Set(selectedCells.map(([r,c])=>`${r},${c}`));
+ let match=null;
+ for(const [word,path] of wordPaths){if(foundSet.has(word)||path.length!==selectedCells.length)continue;if(path.every(([r,c])=>chosen.has(`${r},${c}`))){match={word,path};break}}
+ if(match){commitWord(match.word,match.path.map(x=>[...x]));return}
+ const word=selectedCells.map(([r,c])=>gridData[r][c]).join('');
+ if(foundSet.has(word)){setTip('这个故事已经发现过了。');clearSelection();return}
+ wrongSelection();
+}
+function wrongSelection(){setTip('还不是正确答案，再试试看。','error');selectedCells.forEach(([r,c])=>{const el=cellEls[r][c];el.classList.remove('wrong');void el.offsetWidth;el.classList.add('wrong')});setTimeout(clearSelection,260)}
+function checkInput(){const word=wordInput.value.trim();if(!word){setTip('输入一个电影名或书名试试看。');wordInput.focus();return}if(foundSet.has(word)){setTip('这个故事已经发现过了。');return}if(!ALLOWED_WORDS.includes(word)){setTip('这个名字不在答案列表里，再检查一下吧。','error');wordInput.select();return}const coords=wordPaths.get(word)||findWord(word);if(!coords){setTip('方阵里暂时找不到这个词的连续路径。','error');wordInput.select();return}commitWord(word,coords)}
+function clearSelection(){selectedCells=[];renderSelection()}
+function renderFoundWords(newWord){const box=document.getElementById('wordsBox');box.innerHTML='';foundWords.forEach(w=>{const span=document.createElement('span');span.className='found-word'+(w===newWord?' new':'');span.textContent=w;box.appendChild(span)});document.getElementById('foundCaption').textContent=foundWords.length?`已收集 ${foundWords.length} 个`:'尚未发现';for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)cellEls[r]?.[c]?.classList.remove('found-highlight')}
+function updateProgress(){document.getElementById('foundCount').textContent=foundWords.length;document.getElementById('progressFill').style.width=`${foundWords.length/ALLOWED_WORDS.length*100}%`}
+function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({foundWords,foundPaths}));document.getElementById('saveTip').textContent='进度已自动保存'}catch(e){document.getElementById('saveTip').textContent='当前浏览器无法保存进度'}}
+function load(){try{const data=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');foundWords=Array.isArray(data.foundWords)?data.foundWords.filter(w=>ALLOWED_WORDS.includes(w)):[];foundSet=new Set(foundWords);foundPaths=Array.isArray(data.foundPaths)?data.foundPaths:[]}catch(e){foundWords=[];foundSet=new Set();foundPaths=[]}}
+document.getElementById('submitBtn').addEventListener('click',checkSelected);
+document.getElementById('undoBtn').addEventListener('click',()=>{selectedCells.pop();renderSelection()});
+document.getElementById('clearBtn').addEventListener('click',()=>{clearSelection();setTip('')});
+document.getElementById('inputSubmitBtn').addEventListener('click',checkInput);
+wordInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();checkInput()}});
+document.getElementById('resetBtn').addEventListener('click',()=>{if(!confirm('确定清空所有已发现的故事吗？'))return;foundWords=[];foundSet=new Set();foundPaths=[];selectedCells=[];wordInput.value='';try{localStorage.removeItem(SAVE_KEY)}catch(e){}calculateCounts();updateDots();renderSelection();renderFoundWords();updateProgress();setTip('新的探索开始了。');document.getElementById('saveTip').textContent='进度已重置'});
+document.getElementById('startBtn').addEventListener('click',()=>{document.getElementById('startScreen').style.display='none';document.getElementById('gameApp').style.display='block';window.scrollTo({top:0,behavior:'smooth'})});
+document.getElementById('showRulesBtn').addEventListener('click',()=>document.getElementById('rulesLayer').classList.add('show'));
+document.getElementById('closeRulesBtn').addEventListener('click',()=>document.getElementById('rulesLayer').classList.remove('show'));
+document.getElementById('rulesLayer').addEventListener('click',e=>{if(e.target.id==='rulesLayer')e.currentTarget.classList.remove('show')});
+load();calculateCounts();makeGrid();updateDots();renderSelection();renderFoundWords();updateProgress();
+if(foundWords.length===ALLOWED_WORDS.length)setTip('所有故事都已发现。AC和Fiona祝你天天开心。','success');
+</script>
+</body>
+</html>
