@@ -2,7 +2,7 @@
 made by AC&Fiona
 
 
-#规则     
+#食用指南     
 
 
 *目标：找出所有电影名与书名
@@ -16,7 +16,9 @@ made by AC&Fiona
 
 #鸣谢
 
-字体作者：ark-pixel-font  背景图：成都七中的天空
+字体作者：TakWolf 字体链接：https://github.com/TakWolf/ark-pixel-font 
+
+背景图（AC拍的）：CDQZ的天空
 
 欢迎来玩！
 
