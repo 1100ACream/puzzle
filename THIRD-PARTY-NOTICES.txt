@@ -1,0 +1,8 @@
+Ark Pixel Font
+Copyright (c) 2021, TakWolf (https://takwolf.com)
+Source: https://github.com/TakWolf/ark-pixel-font
+License: SIL Open Font License, Version 1.1 (OFL-1.1)
+
+The Ark Pixel Font files included with this project are distributed under
+the SIL Open Font License, Version 1.1. The full license text is included
+in the accompanying OFL.txt file.
