@@ -16,7 +16,10 @@ made by AC&Fiona
 
 #鸣谢
 
-字体作者：TakWolf 字体链接：https://github.com/TakWolf/ark-pixel-font 
+字体1
+作者：TakWolf 字体链接：https://github.com/TakWolf/ark-pixel-font
+字体2
+https://huozi.cool
 
 背景图（AC拍的）：CDQZ的天空
 
