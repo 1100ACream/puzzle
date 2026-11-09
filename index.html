@@ -5,12 +5,12 @@
 <title>PUZZLE</title>
 <style>
 @font-face {
-  font-family: "Ark Pixel Latin";
-  src: url("./assets/fonts/fusion-pixel-12px-proportional-latin.ttf") format("truetype");
+  font-family: "Latin";
+  src: url("./assets/fonts/jinghua-song-GB.ttf") format("truetype");
 }
 @font-face {
-  font-family: "Ark Pixel Chinese";
-  src: url("./assets/fonts/fusion-pixel-12px-proportional-zh_hans.ttf") format("truetype");
+  font-family: "Chinese";
+  src: url("./assets/fonts/jinghua-song-GB.ttf") format("truetype");
 }
 :root{--bg:#1C2D50;--text:#FFFFFF;--muted:#B8C8E5;--blue:#A8EDF4;--line:#405985;--bad:#E1BCE6}
 *{box-sizing:border-box}
@@ -21,7 +21,7 @@ body {
     linear-gradient(rgba(28, 45, 80, 0.55), rgba(23, 39, 71, 0.65)),
     url("./assets/images/background.jpg") center / cover no-repeat fixed;
   color: var(--text);
-  font-family: "Ark Pixel Chinese", "Ark Pixel Latin", monospace;
+  font-family: "Chinese", "Latin", monospace;
   display: flex;
   justify-content: center;
   padding: 42px 18px 56px;
@@ -29,11 +29,11 @@ body {
 }
 .app{width:min(100%,850px);position:relative;z-index:1}
 header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;padding:0 2px 22px;border-bottom:1px solid #A8EDF433}
-.eyebrow{font:11px "Ark Pixel Chinese","Ark Pixel Latin",monospace;letter-spacing:3px;color:var(--muted);margin-bottom:9px}
-.brand{font:500 clamp(28px,5vw,42px) "Ark Pixel Chinese","Ark Pixel Latin",monospace;letter-spacing:2px;margin:0}
+.eyebrow{font:11px "Chinese","Latin",monospace;letter-spacing:3px;color:var(--muted);margin-bottom:9px}
+.brand{font:500 clamp(28px,5vw,42px) "Chinese","Latin",monospace;letter-spacing:2px;margin:0}
 .sub{font-size:12px;color:var(--muted);letter-spacing:1px;margin-top:8px}
 .progress-info{text-align:right;white-space:nowrap}
-.progress-number{font:22px "Ark Pixel Chinese","Ark Pixel Latin",monospace;color:#c4c9fb}
+.progress-number{font:22px "Chinese","Latin",monospace;color:#c4c9fb}
 .progress-caption{font-size:11px;color:var(--muted);margin-top:5px}
 .progress-track{height:3px;background:#FFFFFF16;margin-top:18px;overflow:hidden;border-radius:5px}
 .progress-fill{height:100%;width:0;background:linear-gradient(90deg,#8582D9,#55B3D9,#A8EDF4);transition:width .5s ease}
@@ -49,23 +49,23 @@ header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;
 .cell.pulse{animation:pulse .48s ease}
 .cell.wrong{animation:shake .28s ease}
 .cell.empty{pointer-events:none}
-.cell .remaining-count{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font:7px "Ark Pixel Chinese","Ark Pixel Latin",monospace;line-height:1;color:inherit;opacity:.9;pointer-events:none}
+.cell .remaining-count{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font:7px "Chinese","Latin",monospace;line-height:1;color:inherit;opacity:.9;pointer-events:none}
 .cell.done-char{color:#7E91B5}
 .cell.done-char .remaining-count{opacity:.25}
 @keyframes pulse{0%{transform:scale(1)}38%{transform:scale(1.22);background:#a9d9df35}72%{transform:scale(.96)}100%{transform:scale(1)}}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
 .selection{margin-top:20px;background:#13234440;border:1px solid #A8EDF433;border-radius:13px;padding:16px}
 .selection-top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}
-.small-label{font:10px "Ark Pixel Chinese","Ark Pixel Latin",monospace;letter-spacing:2px;color:var(--muted)}
+.small-label{font:10px "Chinese","Latin",monospace;letter-spacing:2px;color:var(--muted)}
 #selectedWord{font-size:20px;letter-spacing:3px;min-height:30px;overflow-wrap:anywhere}
 .selection-actions{display:flex;gap:8px;flex-wrap:wrap}
-.btn{border:1px solid #5A7CBF;background:#2B426B;color:#FFFFFF;border-radius:8px;padding:9px 15px;font:13px "Ark Pixel Chinese","Ark Pixel Latin",monospace;cursor:pointer;transition:background .2s,transform .2s}
+.btn{border:1px solid #5A7CBF;background:#2B426B;color:#FFFFFF;border-radius:8px;padding:9px 15px;font:13px "Chinese","Latin",monospace;cursor:pointer;transition:background .2s,transform .2s}
 .btn:hover{background:#385684}
 .btn.primary{background:#A8EDF4;color:#1C2D50;border-color:#A8EDF4}
 .btn.primary:hover{background:#C3F4F8}
 .btn.quiet{background:transparent;color:#C5D2EB}
 .input-row{display:flex;gap:8px;margin-top:11px}
-.input-row input{flex:1;min-width:0;background:#14244340;border:1px solid #405985;border-radius:8px;padding:11px 13px;color:#FFFFFF;font:14px "Ark Pixel Chinese","Ark Pixel Latin",monospace;outline:none}
+.input-row input{flex:1;min-width:0;background:#14244340;border:1px solid #405985;border-radius:8px;padding:11px 13px;color:#FFFFFF;font:14px "Chinese","Latin",monospace;outline:none}
 .input-row input:focus{border-color:#A8EDF4}
 .input-row input::placeholder{color:#65718f}
 #tip{min-height:22px;margin:12px 2px 0;font-size:12px;color:var(--muted)}
@@ -74,7 +74,7 @@ header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;
 .found-section{margin-top:30px}
 .section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .section-title{font-size:13px;font-weight:500;letter-spacing:1px}
-.section-count{font:11px "Ark Pixel Chinese","Ark Pixel Latin",monospace;color:var(--muted)}
+.section-count{font:11px "Chinese","Latin",monospace;color:var(--muted)}
 .found-words{display:flex;flex-wrap:wrap;gap:8px;min-height:32px}
 .found-word{border:1px solid #405985;background:#263B6340;color:#E7EEFF;border-radius:7px;padding:7px 10px;font-size:12px;animation:word-in .35s ease both}
 .found-word.new{border-color:#C3EDD6;color:#C3EDD6}
@@ -101,13 +101,13 @@ header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;
 .game-app{display:none}
 .start-screen{width:min(100%,850px);min-height:calc(100vh - 98px);display:flex;align-items:center;justify-content:center;margin:auto}
 .start-card{width:100%;text-align:center;padding:clamp(28px,7vw,70px) 20px;background:#13234440;border:1px solid #A8EDF444;border-radius:22px;box-shadow:0 20px 65px #07132945;position:relative;overflow:hidden}
-.start-mark{font:11px "Ark Pixel Chinese","Ark Pixel Latin",monospace;letter-spacing:4px;color:var(--muted);margin-bottom:20px}
-.start-title{font:500 clamp(36px,8vw,64px) "Ark Pixel Chinese","Ark Pixel Latin",monospace;letter-spacing:4px;margin:0;color:#FFFFFF}
+.start-mark{font:11px "Chinese","Latin",monospace;letter-spacing:4px;color:var(--muted);margin-bottom:20px}
+.start-title{font:500 clamp(36px,8vw,64px) "Chinese","Latin",monospace;letter-spacing:4px;margin:0;color:#FFFFFF}
 .start-cn{font-size:15px;letter-spacing:5px;color:var(--blue);margin-top:13px}
 .start-desc{max-width:440px;margin:22px auto 30px;color:var(--muted);font-size:13px}
 .start-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
 .start-actions .btn{min-width:145px;padding:12px 18px}
-.start-version{margin-top:34px;font:10px "Ark Pixel Chinese","Ark Pixel Latin",monospace;letter-spacing:2px;color:#7184A8}
+.start-version{margin-top:34px;font:10px "Chinese","Latin",monospace;letter-spacing:2px;color:#7184A8}
 .rules-layer{display:none;position:fixed;inset:0;z-index:10;background:#071329c9;align-items:center;justify-content:center;padding:20px}
 .rules-layer.show{display:flex}
 .rules-card{width:min(100%,520px);max-height:85vh;overflow:auto;background:#1C2D50;border:1px solid #A8EDF455;border-radius:16px;padding:24px;box-shadow:0 20px 65px #0008}
